@@ -12,6 +12,7 @@
   "dependencies": {
     "-": "^0.0.1",
     "@astrojs/check": "^0.9.4",
+    "@astrojs/vercel": "^7.8.1",
     "astro": "^4.16.5",
     "autoprefixer": "^10.4.20",
     "postcss": "^8.4.47",
