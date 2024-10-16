@@ -10,6 +10,6 @@ export default defineConfig({
     webAnalytics: {enabled: true}
   }),
 
-  site: "https://flomaster.chrsnv.ru",
+  site: "https://photo.chrsnv.ru",
   base: "/",
 });
