@@ -21,7 +21,7 @@ export async function POST({ request }) {
         const filename = generateRandomFilename(file.name);
         const filepath = join(process.cwd(), 'public', 'pictures', filename);
 
-        await writeFile(filepath, Buffer.from(buffer));
+        await writeFile(filepath, new Uint8Array(buffer));
         return new Response(JSON.stringify({ filename }), { status: 200 });
     } catch (error) {
         console.error('Ошибка обработки загрузки:', error);

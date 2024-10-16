@@ -13,7 +13,7 @@ import Layout from '../layouts/Layout.astro';
 							<div class="flex flex-col items-center justify-center pt-5 pb-6">
 								<svg class="w-10 h-10 mb-3 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"></path></svg>
 								<p class="mb-2 text-sm text-gray-500"><span class="font-semibold">Нажмите, чтобы выбрать файл</span> или перетащите его сюда</p>
-								<p class="text-xs text-gray-500">PNG, JPG или GIF (макс. 10MB)</p>
+								<p id="file-name" class="text-xs text-gray-500">PNG, JPG или GIF (макс. 10MB)</p>
 							</div>
 							<input id="file-upload" name="image" type="file" class="hidden" accept="image/*" required />
 						</label>
@@ -38,11 +38,12 @@ import Layout from '../layouts/Layout.astro';
 </Layout>
 
 <script>
-	const form = document.getElementById('upload-form');
-	const statusElement = document.getElementById('upload-status');
-	const imageLinkDiv = document.getElementById('image-link');
-	const imageUrlInput = document.getElementById('image-url');
-	const copyLinkButton = document.getElementById('copy-link');
+	const form = document.getElementById('upload-form') as HTMLFormElement;
+	const statusElement = document.getElementById('upload-status') as HTMLElement;
+	const imageLinkDiv = document.getElementById('image-link') as HTMLElement;
+	const imageUrlInput = document.getElementById('image-url') as HTMLInputElement;
+	const copyLinkButton = document.getElementById('copy-link') as HTMLButtonElement;
+	const fileNameElement = document.getElementById('file-name') as HTMLElement;
 
 	form.addEventListener('submit', async (e) => {
 		e.preventDefault();
@@ -69,30 +70,32 @@ import Layout from '../layouts/Layout.astro';
 
 			// Reset the form
 			form.reset();
+			fileNameElement.textContent = 'PNG, JPG или GIF (макс. 10MB)';
 		} catch (error) {
 			console.error('Ошибка:', error);
-			statusElement.textContent = `Ошибка загрузки: ${error.message}`;
+			statusElement.textContent = `Ошибка загрузки: ${error instanceof Error ? error.message : 'Неизвестная ошибка'}`;
 		}
 	});
 
 	copyLinkButton.addEventListener('click', () => {
 		imageUrlInput.select();
-		document.execCommand('copy');
-		copyLinkButton.textContent = 'Скопировано!';
-		setTimeout(() => {
-			copyLinkButton.textContent = 'Копировать';
-		}, 2000);
+		navigator.clipboard.writeText(imageUrlInput.value).then(() => {
+			copyLinkButton.textContent = 'Скопировано!';
+			setTimeout(() => {
+				copyLinkButton.textContent = 'Копировать';
+			}, 2000);
+		});
 	});
 
 	// Обновление текста при выборе файла
-	const fileInput = document.getElementById('file-upload');
+	const fileInput = document.getElementById('file-upload') as HTMLInputElement;
 	fileInput.addEventListener('change', (e) => {
-		const fileName = e.target.files[0]?.name;
-		const fileNameDisplay = document.querySelector('.text-sm.text-gray-500');
+		const target = e.target as HTMLInputElement;
+		const fileName = target.files?.[0]?.name;
 		if (fileName) {
-			fileNameDisplay.textContent = `Выбран файл: ${fileName}`;
+			fileNameElement.textContent = `Выбран файл: ${fileName}`;
 		} else {
-			fileNameDisplay.textContent = 'PNG, JPG или GIF (макс. 10MB)';
+			fileNameElement.textContent = 'PNG, JPG или GIF (макс. 10MB)';
 		}
 	});
 </script>
