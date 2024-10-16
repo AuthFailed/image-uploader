@@ -1,15 +1,13 @@
 // @ts-check
 import { defineConfig } from 'astro/config';
-
+import deno from '@deno/astro-adapter';
 import vercel from '@astrojs/vercel/serverless';
 
 // https://astro.build/config
 export default defineConfig({
   output: 'server',
-  adapter: vercel({
-    webAnalytics: {enabled: true}
-  }),
+  adapter: deno(),
 
-  site: "https://photo.chrsnv.ru",
+  site: "https://img.chrsnv.ru",
   base: "/",
 });
