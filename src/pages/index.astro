@@ -1,16 +1,98 @@
 ---
-
+import Layout from '../layouts/Layout.astro';
 ---
 
-<html lang="en">
-	<head>
-		<meta charset="utf-8" />
-		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-		<meta name="viewport" content="width=device-width" />
-		<meta name="generator" content={Astro.generator} />
-		<title>Astro</title>
-	</head>
-	<body>
-		<h1>Astro</h1>
-	</body>
-</html>
+<Layout title="Загрузка изображений">
+	<main class="container mx-auto px-4 py-8">
+		<h1 class="text-3xl font-bold mb-8 text-center text-gray-800">Загрузка изображения</h1>
+		<div class="max-w-md mx-auto bg-white rounded-xl shadow-md overflow-hidden md:max-w-2xl">
+			<div class="p-8">
+				<form id="upload-form" class="space-y-4">
+					<div class="flex items-center justify-center w-full">
+						<label for="file-upload" class="flex flex-col items-center justify-center w-full h-64 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50 hover:bg-gray-100">
+							<div class="flex flex-col items-center justify-center pt-5 pb-6">
+								<svg class="w-10 h-10 mb-3 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"></path></svg>
+								<p class="mb-2 text-sm text-gray-500"><span class="font-semibold">Нажмите, чтобы выбрать файл</span> или перетащите его сюда</p>
+								<p class="text-xs text-gray-500">PNG, JPG или GIF (макс. 10MB)</p>
+							</div>
+							<input id="file-upload" name="image" type="file" class="hidden" accept="image/*" required />
+						</label>
+					</div>
+					<button type="submit" class="w-full bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline transition duration-300 ease-in-out transform hover:-translate-y-1 hover:scale-105">
+						Загрузить
+					</button>
+				</form>
+				<div id="upload-status" class="mt-4 text-center text-sm text-gray-600"></div>
+				<div id="image-link" class="mt-4 p-4 bg-gray-100 rounded-lg hidden">
+					<p class="text-sm text-gray-700 mb-2">Ссылка на ваше изображение:</p>
+					<div class="flex">
+						<input type="text" id="image-url" readonly class="flex-grow mr-2 p-2 text-sm text-gray-700 bg-white border border-gray-300 rounded-lg focus:outline-none focus:border-blue-500">
+						<button id="copy-link" class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline transition duration-300 ease-in-out">
+							Копировать
+						</button>
+					</div>
+				</div>
+			</div>
+		</div>
+	</main>
+</Layout>
+
+<script>
+	const form = document.getElementById('upload-form');
+	const statusElement = document.getElementById('upload-status');
+	const imageLinkDiv = document.getElementById('image-link');
+	const imageUrlInput = document.getElementById('image-url');
+	const copyLinkButton = document.getElementById('copy-link');
+
+	form.addEventListener('submit', async (e) => {
+		e.preventDefault();
+		statusElement.textContent = 'Загрузка...';
+		imageLinkDiv.classList.add('hidden');
+
+		const formData = new FormData(form);
+
+		try {
+			const response = await fetch('/api/upload', {
+				method: 'POST',
+				body: formData,
+			});
+
+			const data = await response.json();
+
+			if (!response.ok) {
+				throw new Error(data.error || 'Ошибка загрузки');
+			}
+
+			statusElement.textContent = 'Загрузка успешно завершена!';
+			imageUrlInput.value = `${window.location.origin}/pictures/${data.filename}`;
+			imageLinkDiv.classList.remove('hidden');
+
+			// Reset the form
+			form.reset();
+		} catch (error) {
+			console.error('Ошибка:', error);
+			statusElement.textContent = `Ошибка загрузки: ${error.message}`;
+		}
+	});
+
+	copyLinkButton.addEventListener('click', () => {
+		imageUrlInput.select();
+		document.execCommand('copy');
+		copyLinkButton.textContent = 'Скопировано!';
+		setTimeout(() => {
+			copyLinkButton.textContent = 'Копировать';
+		}, 2000);
+	});
+
+	// Обновление текста при выборе файла
+	const fileInput = document.getElementById('file-upload');
+	fileInput.addEventListener('change', (e) => {
+		const fileName = e.target.files[0]?.name;
+		const fileNameDisplay = document.querySelector('.text-sm.text-gray-500');
+		if (fileName) {
+			fileNameDisplay.textContent = `Выбран файл: ${fileName}`;
+		} else {
+			fileNameDisplay.textContent = 'PNG, JPG или GIF (макс. 10MB)';
+		}
+	});
+</script>
