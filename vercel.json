@@ -4,5 +4,9 @@
       "source": "/pictures/(.*)",
       "destination": "https://wmgrdmlwijlgbrrojjzk.supabase.co/storage/v1/object/public/images/$1"
     }
-  ]
+  ],
+  "crons": [{
+    "path": "/api/cleanup",
+    "schedule": "0 */3 * * *"
+  }]
 }

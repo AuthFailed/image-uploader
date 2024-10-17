@@ -1,4 +1,3 @@
-// File: api/cron/cleanup.ts
 import { createClient } from '@supabase/supabase-js';
 import type { VercelRequest, VercelResponse } from '@vercel/node';
 
@@ -7,11 +6,6 @@ const supabaseKey = import.meta.env.SUPABASE_SERVICE_ROLE_KEY
 const supabase = createClient(supabaseUrl, supabaseKey);
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
-    // Verify that this is a cron job request
-    if (req.headers.authorization !== `Bearer ${process.env.CRON_SECRET}`) {
-        return res.status(401).end('Unauthorized');
-    }
-
     try {
         const oneDayAgo = new Date(Date.now() - 24 * 60 * 60 * 1000);
 
