@@ -73,7 +73,7 @@ export async function POST({ request }) {
             return new Response(JSON.stringify({ error: 'Error uploading file' }), { status: 500 })
         }
 
-        const customUrl = `https://img.chrsnv.ru/${filename}`;
+        const customUrl = `https://img.chrsnv.ru/pictures/${filename}`;
         return new Response(JSON.stringify({
             url: customUrl
         }), { status: 200 })
