@@ -25,9 +25,9 @@ import Layout from '../layouts/Layout.astro';
 				<div id="upload-status" class="mt-4 text-center text-sm text-gray-600"></div>
 				<div id="image-link" class="mt-4 p-4 bg-gray-100 rounded-lg hidden">
 					<p class="text-sm text-gray-700 mb-2">Ссылка на ваше изображение:</p>
-					<div class="flex">
+					<div class="flex flex-col md:flex-row">
 						<input type="text" id="image-url" readonly class="flex-grow mr-2 p-2 text-sm text-gray-700 bg-white border border-gray-300 rounded-lg focus:outline-none focus:border-blue-500">
-						<button id="copy-link" class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline transition duration-300 ease-in-out">
+						<button id="copy-link" class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline transition duration-300 mt-2 md:mt-0 md:ml-2">
 							Копировать
 						</button>
 					</div>
