@@ -1,7 +1,6 @@
 import { createClient } from '@supabase/supabase-js'
 import crypto from 'crypto'
 
-// Initialize Supabase client
 let supabase
 try {
     const supabaseUrl = import.meta.env.SUPABASE_URL
@@ -17,7 +16,6 @@ try {
             persistSession: false
         }
     })
-    console.log('Supabase admin client initialized successfully')
 } catch (error) {
     console.error('Error initializing Supabase client:', error)
 }
@@ -75,15 +73,9 @@ export async function POST({ request }) {
             return new Response(JSON.stringify({ error: 'Error uploading file' }), { status: 500 })
         }
 
-        // Get public URL
-        const { data: publicUrlData } = supabase
-            .storage
-            .from('images')
-            .getPublicUrl(filename)
-
+        const customUrl = `https://img.chrsnv.ru/${filename}`;
         return new Response(JSON.stringify({
-            filename,
-            url: publicUrlData.publicUrl
+            url: customUrl
         }), { status: 200 })
 
     } catch (error) {

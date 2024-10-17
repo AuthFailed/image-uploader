@@ -65,7 +65,7 @@ import Layout from '../layouts/Layout.astro';
 			}
 
 			statusElement.textContent = 'Загрузка успешно завершена!';
-			imageUrlInput.value = `${window.location.origin}/pictures/${data.filename}`;
+			imageUrlInput.value = data.url; // Use the URL provided by Supabase
 			imageLinkDiv.classList.remove('hidden');
 
 			// Reset the form
