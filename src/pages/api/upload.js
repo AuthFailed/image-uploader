@@ -32,11 +32,16 @@ export async function POST({ request }) {
         const file = formData.get('image')
 
         if (!file) {
-            return new Response(JSON.stringify({ error: 'File not uploaded' }), { status: 400 })
+            return new Response(JSON.stringify({ error: 'Файл не загружен' }), { status: 400 })
         }
 
         if (!file.type.startsWith('image/')) {
-            return new Response(JSON.stringify({ error: 'File is not an image' }), { status: 400 })
+            return new Response(JSON.stringify({ error: 'Прикрепленный файл - не картинка' }), { status: 400 })
+        }
+
+        const MAX_FILE_SIZE = 50 * 1024 * 1024; // 50 MB
+        if (file.size > MAX_FILE_SIZE) {
+            return new Response(JSON.stringify({ error: 'Размер файла превышает 50мбит' }), { status: 400 })
         }
 
         // Check current storage usage
